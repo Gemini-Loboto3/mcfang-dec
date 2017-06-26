@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EB3E7DB2-93E0-4987-B32A-DDAD6FF0DEE9}</ProjectGuid>
+    <ProjectGuid>{F9F2AFD4-313D-47D3-BD89-8F210AA77929}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>quintdec</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>mcdec</ProjectName>
+    <ProjectName>mccmp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -160,7 +160,7 @@
   <ItemGroup>
     <ClCompile Include="gfx.cpp" />
     <ClCompile Include="lz.cpp" />
-    <ClCompile Include="mcdec.cpp" />
+    <ClCompile Include="mccmp.cpp" />
     <ClCompile Include="snes.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
