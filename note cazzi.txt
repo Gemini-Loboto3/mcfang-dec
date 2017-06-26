@@ -1,7 +1,0 @@
-0x68003 compressed font (lower half)
-0x6848F compressed font (higher half?)
-0x84DA1 compressed graphics?
-
-COMPRESSION FORMAT
-Seems to use a ring buffer of 8KB (rewinds with a & 0x1fff mask).
-
