@@ -240,6 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/note cazzi.txt
 /*.sfc
 /*.7z
+/notes.txt
