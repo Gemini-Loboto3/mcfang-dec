@@ -7,6 +7,7 @@
 
 #define EXPANSION_PTR	0x100000	// expansion area for new graphics
 #define GFX_PTR_BASE	0x7d40		// references to all compressed gfx in game
+#define TILEMAP_PTR_BASE	0x0DDE00	// references to all compressed tilemaps in game
 
 int _tmain(int argc, TCHAR *argv[])
 {
@@ -29,11 +30,13 @@ int _tmain(int argc, TCHAR *argv[])
 	MemStreamOpen(&str, argv[1]);
 	MemStreamSeek(&str, GFX_PTR_BASE, SEEK_SET);	// table of gfx data
 	u32 ptr_base = EXPANSION_PTR;	// expanded rom space
+
 	// data to write to rom
 	MemStreamCreate(&data);
+
 	for (int i = 0; i < 173; i++)
 	{
-		name.Format(_T("gfx\\%03d.png"), i);
+		name.Format(_T("gfx\\%03d.bmp"), i);
 		if (!FileExists(name))
 		{
 			// skip current pointer
@@ -68,9 +71,53 @@ int _tmain(int argc, TCHAR *argv[])
 		ptr_base += size + 3;
 	}
 
+	MemStreamSeek(&str, TILEMAP_PTR_BASE, SEEK_SET);	// table of tilemap data
+
+	MEM_STREAM str1;
+
+	// tilemap data to write to rom
+	for (int i = 0; i < 8; i++)
+	{
+		name.Format(_T("tilemap\\%03d.bin"), i);
+		if (!FileExists(name))
+		{
+			// skip current pointer
+			MemStreamSeek(&str, 3, SEEK_CUR);
+			continue;
+		}
+
+		_tprintf(_T("Compressing %s...\n"), (LPCTSTR)name);
+
+		u8* dst, * cdst; int size;
+		size = 2048; // 0x800
+		dst = new u8[size];
+		MemStreamOpen(&str1, name);
+		MemStreamRead(&str1, dst, size);
+
+		TILEMAP_HEADER head;
+		head.w = 0x20;
+		head.h = 0x20;
+
+		// compress tilemap and write header data
+		size = Compress(cdst, dst, size);
+		MemStreamWrite(&data, &head, sizeof(head));
+		MemStreamWrite(&data, cdst, size);
+		// update pointer table
+		u32 p = ToLorom(ptr_base);
+		MemStreamWrite(&str, &p, 3);
+		// kill temp buffers
+		delete[] dst;
+		delete[] cdst;
+		// seek forward
+		ptr_base += size + 2;
+		MemStreamClose(&str1);
+	}
+
 	// write assembled compressed data to rom
 	MemStreamSeek(&str, EXPANSION_PTR, SEEK_SET);
 	MemStreamWrite(&str, data.data, data.size);
+
+
 	// pad rom to bank size
 	for (int i = str.size, si = align(str.size, 0x8000); i < si; i++)
 		MemStreamWriteByte(&str, 0);
