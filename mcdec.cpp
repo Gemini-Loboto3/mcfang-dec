@@ -36,8 +36,8 @@ int _tmain(int argc, TCHAR *argv[])
 		u32 p = FromLorom(read_u24(r));
 		GFX_HEADER *h = (GFX_HEADER*)&rom[p];
 		if (p == 0) { r += 3;  continue; }
-		fprintf(log, "GFX %03d: %04x SIZE: %02x %02x FORMAT: %02x\r\n",
-			i, p, h->w, h->h, h->depth);
+		fprintf(log, "GRAPHIC %03d | PTR: 0x%06X | SIZE: %03d*%03d | BPP: %1x\r\n",
+			i, p, h->w * 8, h->h * 8, h->depth);
 		int size = Decompress(&rom[p+3], dst);
 		gfx_name.Format(_T("bin\\%03d.bin"), i);
 		FlushFile(gfx_name, dst, size);
@@ -66,8 +66,8 @@ int _tmain(int argc, TCHAR *argv[])
 		u32 p = FromLorom(read_u24(r1));
 		GFX_HEADER* h = (GFX_HEADER*)&rom[p];
 		if (p == 0) { r1 += 3;  continue; }
-		fprintf(log, "TILEMAP %03d: %04x SIZE: %02x %02x FORMAT: %02x\r\n",
-			i, p, h->w, h->h, h->depth);
+		fprintf(log, "TILEMAP %03d | PTR: 0x%06X | SIZE: %03d*%03d\r\n",
+			i, p, h->w, h->h);
 		int size = Decompress(&rom[p + 2], dst);
 		tilemap_name.Format(_T("tilemap\\%03d.bin"), i);
 		FlushFile(tilemap_name, dst, size);
